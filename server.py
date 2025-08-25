@@ -13,8 +13,7 @@ app = Flask("Emotion Detector")
 @app.route("/emotionDetector")
 def emotional_detector():
     ''' This function detects emotion using Watson AI API'''
-    # Retrieve the text to analyze from the request arguments
-    # Check if its valid
+    # Retrieve and validate the text to analyze from the request arguments
     text_to_analyze = request.args.get('textToAnalyze')
     # if not text_to_analyze:
     #     return "Please try enter something. It's fun!!"
@@ -22,16 +21,15 @@ def emotional_detector():
     # Pass the text to the emotion_detector function and store the response
     emotional_response = emotion_detector(text_to_analyze)
 
-    # Extract the dominant_emotionfrom the response
-    # Check if the isSuccess is None, indicating an error or invalid input
-    is_error = emotional_response.get('message')
-    if is_error:
-        return is_error
+    # Extract the message from the response, it indicates error
+    # is_error = emotional_response.get('message')
+    # if is_error:
+    #     return is_error
 
-    # Alternative Approach
-    # is_400 = emotional_response.get('dominant_emotion')
-    # if is_400 is None:
-    #     return "<b>Invalid text! Please try again!</b>"
+    # Extract the dominant_emotion from the response
+    is_400 = emotional_response.get('dominant_emotion')
+    if is_400 is None:
+        return "<b>Invalid text! Please try again!</b>"
 
     # Format the emotional response
     output = (
