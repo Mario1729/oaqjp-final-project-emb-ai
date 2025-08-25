@@ -19,9 +19,9 @@ def emotion_detector(text_to_analyse):
     # Set the headers with the required model ID for the API
     header = {"grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock"}
 
-    # Checking for empty input/white spaces
-    if (text_to_analyse is None) or (not text_to_analyse.strip()):
-        return {'input error': 'Please enter valid text, not empty or whitespace'}
+    # # Checking for empty input/white spaces
+    # if (text_to_analyse is None) or (not text_to_analyse.strip()):
+    #     return {'input error': 'Please enter valid text, not empty or whitespace'}
 
     # Make a POST request to the API with the payload and headers
     try:
@@ -45,12 +45,15 @@ def emotion_detector(text_to_analyse):
                             'sadness': emotion_scores['sadness'],
                             'dominant_emotion': dominant_emotion
                             }
-    # If the response status code is 500
+    # If the response status code is 400
     elif 400 <= response.status_code < 500:
-        return_response = {f'input error {response.status_code}': 'Please enter valid text'}
+        emotion_scores = {'anger':1, 'disgust':1, 'fear':1, 'joy':1, 'sadness':1}
+        return_response = {key: None for key in emotion_scores}
+        return_response['dominant_emotion'] = None
     elif 500 <= response.status_code < 600:
-        return_response = {f'server error {response.status_code}': 'Please try again'}
+        return_response = {'message': f"Server error '{response.status_code}' please try again"}
     else:
-        return_response = {f'info {response.status_code}': response.text}
+        return_response = {'message': f"Server response '{response.status_code}' {response.text}"}
+
     # Return response
     return return_response
